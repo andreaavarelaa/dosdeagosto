@@ -1,4 +1,20 @@
 import streamlit as st
+from pathlib import Path
+
+
+def render_logo_header():
+    logo_path = Path(__file__).resolve().parent / "logo.png"
+    if not logo_path.exists():
+        return
+
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.image(
+            str(logo_path),
+            use_container_width=True,
+            output_format="auto"
+        )
+
 
 st.set_page_config(
     page_title="Dos de Agosto",
@@ -63,6 +79,7 @@ st.markdown("""
         </style>
     """, unsafe_allow_html=True)
 
+render_logo_header()
 st.markdown("<h1 style='text-align: center; font-size: 3rem; margin-top: 1rem;'>CAFÉ & LETRAS</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; font-style: italic; color: #666;'>Club de lectura de Claudia, Irene y Andrea</p>", unsafe_allow_html=True)
 st.markdown("---")
