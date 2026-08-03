@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dos de Agosto — Club de Lectura</title>
-    <!-- Fuentes Google: Playfair Display + Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -79,7 +78,6 @@
             margin: 2rem 0;
         }
 
-        /* Sistema de Pestañas */
         .tabs {
             display: flex;
             justify-content: center;
@@ -115,7 +113,6 @@
             display: block;
         }
 
-        /* Seccion Libro del Mes */
         .featured-book {
             display: grid;
             grid-template-columns: 1fr 2fr;
@@ -171,7 +168,6 @@
             margin-top: 1.5rem;
         }
 
-        /* Seccion Biblioteca */
         .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -197,7 +193,6 @@
             margin: 0.4rem 0;
         }
 
-        /* Seccion Comunidad / Formularios */
         form {
             display: flex;
             flex-direction: column;
@@ -253,14 +248,12 @@
         </div>
     </header>
 
-    <!-- Pestañas de Navegación -->
     <div class="tabs">
         <button class="tab-button active" onclick="openTab(event, 'tab1')">📖 Libro del mes</button>
         <button class="tab-button" onclick="openTab(event, 'tab2')">📚 Biblioteca</button>
         <button class="tab-button" onclick="openTab(event, 'tab3')">💬 Comunidad</button>
     </div>
 
-    <!-- Pestaña 1: Libro del Mes -->
     <div id="tab1" class="tab-content active">
         <div class="featured-book">
             <div class="book-cover">
@@ -269,7 +262,7 @@
             <div class="book-details">
                 <span class="badge">Lectura actual — Agosto</span>
                 <h2>Orgullo y Prejuicio</h2>
-                <p class="meta"><b>Autor:</b> Jane Austen | <b>Páginas:</b> 432 | <b>Género:</b> Romance / Comedia</p>
+                <p class="meta"><b>Autor:</b> Jane Austen | <b>Páginas:</b> 432 | <b>Género:</b> Romance</p>
                 
                 <p>Una novela clásica de Jane Austen que explora los temas de matrimonio, clase social y amor verdadero a través de la relación entre Elizabeth Bennet y el Sr. Darcy. Una lectura imprescindible que sigue siendo relevante y entretenida.</p>
                 
@@ -278,38 +271,36 @@
                 </div>
                 
                 <div class="info-card">
-                    📅 <b>Próxima reunión:</b> Viernes 29 de Agosto - 19:30h<br>
+                    📅 <b>Próxima reunión:</b> Fecha y hora<br>
                     📍 <b>Lugar:</b> Casa de Claudia
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Pestaña 2: Biblioteca -->
     <div id="tab2" class="tab-content">
         <h3 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 1rem;">Histórico de lecturas</h3>
         <div class="grid-2">
             <div class="book-card">
-                <span style="color:#888; font-size: 0.85rem;">Julio 2026</span>
+                <span style="color:#888; font-size: 0.85rem;">Mes y año</span>
                 <h3>Título del libro anterior</h3>
-                <p><b>Autor:</b> Nombre del autor — ⭐ 4.5 / 5</p>
+                <p><b>Autor:</b> Nombre del autor — ⭐ x / 5</p>
                 <p style="margin-top: 0.5rem; color: #555;">Breve sinopsis o comentario del grupo sobre esta lectura.</p>
             </div>
             <div class="book-card">
-                <span style="color:#888; font-size: 0.85rem;">Junio 2026</span>
+                <span style="color:#888; font-size: 0.85rem;">Mes y año</span>
                 <h3>Otro libro leído</h3>
-                <p><b>Autor:</b> Nombre de la autora — ⭐ 5 / 5</p>
+                <p><b>Autor:</b> Nombre de la autora — ⭐ x / 5</p>
                 <p style="margin-top: 0.5rem; color: #555;">Breve sinopsis o comentario del grupo sobre esta lectura.</p>
             </div>
         </div>
     </div>
 
-    <!-- Pestaña 3: Comunidad -->
     <div id="tab3" class="tab-content">
         <div class="grid-2">
             <div>
                 <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 1rem;">Proponer lectura</h3>
-                <form action="https://formspree.io/f/TU_ID_AQUI" method="POST">
+                <form action="https://formspree.io/f/mqerrdww" method="POST">
                     <input type="text" name="titulo" placeholder="Título del libro" required>
                     <input type="text" name="autor" placeholder="Autor / Autora" required>
                     <textarea name="razon" rows="4" placeholder="¿Por qué deberíamos leerlo?" required></textarea>
@@ -319,7 +310,7 @@
 
             <div>
                 <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 1rem;">Confirmar asistencia</h3>
-                <form action="https://formspree.io/f/TU_ID_AQUI" method="POST">
+                <form action="https://formspree.io/f/mwvggnyl" method="POST">
                     <input type="text" name="nombre" placeholder="Tu nombre" required>
                     <select name="asistencia" required>
                         <option value="" disabled selected>¿Asistirás a la próxima reunión?</option>
@@ -335,7 +326,6 @@
 </div>
 
 <script>
-    // Lógica sencilla para cambiar entre pestañas
     function openTab(evt, tabName) {
         var i, tabcontent, tablinks;
         tabcontent = document.getElementsByClassName("tab-content");
