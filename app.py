@@ -67,7 +67,7 @@ st.markdown("<h1 style='text-align: center; font-size: 3rem; margin-top: 1rem;'>
 st.markdown("<p style='text-align: center; font-style: italic; color: #666;'>Club de lectura de Claudia, Irene y Andrea</p>", unsafe_allow_html=True)
 st.markdown("---")
 
-tab1, tab2, tab3, tab4 = st.tabs(["📖 Libro del mes", "📚 Biblioteca", "💡 Guía de debate", "💬 Comunidad"])
+tab1, tab2, tab3 = st.tabs(["📖 Libro del mes", "📚 Biblioteca", "💬 Comunidad"])
 
 with tab1:
     col_img, col_info = st.columns([1, 2], gap="large")
@@ -83,7 +83,7 @@ with tab1:
     with col_info:
         st.markdown("<span class='badge'>Lectura actual - Agosto</span>", unsafe_allow_html=True)
         st.markdown("## Título del libro")
-        st.markdown("<b>Autor:</b> Nombre del autor | <b>Páginas:</b> Número de páginas | <b>Género:</b> Género del libro")
+        st.markdown("Autor: Nombre del autor | Páginas: Número de páginas | Género: Género del libro")
 
         st.write("""
         Descripción del libro + por qué se escogió para este mes.
@@ -95,7 +95,7 @@ with tab1:
         </div>
         """, unsafe_allow_html=True)
 
-        st.info("📅 <b>Próxima reunión:</b> Fecha y hora | 📍 <b>Lugar:</b> Casa de Claudia")
+        st.info("📅 Próxima reunión: Fecha y hora | 📍 Lugar: Casa de Claudia")
 
 with tab2:
     st.markdown("### Histórico de lecturas")
@@ -108,7 +108,7 @@ with tab2:
         <div class="book-card">
             <span style="color:#888; font-size: 0.85rem;">Mes y año de lectura</span>
             <h3>Título del libro</h3>
-            <p><b>Autor: Nombre del autor</b> - ⭐ Puntuación / 5</p>
+            <p>Autor: Nombre del autor - ⭐ Puntuación / 5</p>
             <p>Sinopsis del libro</p>
         </div>
         """, unsafe_allow_html=True)
@@ -118,23 +118,12 @@ with tab2:
         <div class="book-card">
             <span style="color:#888; font-size: 0.85rem;">Mes y año de lectura</span>
             <h3>Título del libro</h3>
-            <p><b>Autor: Nombre del autor</b> - ⭐ Puntuación / 5</p>
+            <p>Autor: Nombre del autor - ⭐ Puntuación / 5</p>
             <p>Sinopsis del libro</p>
         </div>
         """, unsafe_allow_html=True)
 
 with tab3:
-    st.markdown("### Preguntas para el debate del mes")
-    
-    with st.expander("Capítulos x al y"):
-        st.write("Pregunta 1")
-        st.write("Pregunta 2")
-
-    with st.expander("Capítulos y+1 al z"):
-        st.write("Pregunta 1")
-        st.write("Pregunta 2")
-
-with tab4:
     col_prop, col_rsvp = st.columns(2, gap="large")
 
     with col_prop:
