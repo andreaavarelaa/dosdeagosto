@@ -25,10 +25,12 @@ Somos un club de lectura abierto y dinámico. Cada mes elegimos una obra diferen
 ---
 
 ## El repositorio
-Este repositorio contiene el código fuente de la página web oficial de nuestra comunidad. Aquí encontrarás:
-* La estructura y archivos de diseño de la web.
-* El historial de libros leídos y propuestas para futuras lecturas integradas en el sitio.
-* Los componentes necesarios para el desarrollo y despliegue de la plataforma.
+Este repositorio contiene el código fuente en Python de la aplicación web oficial del club de lectura creada con Streamlit.
+La plataforma incluye:
+* **📖 Libro del mes:** Información detallada de la lectura actual y próximas reuniones.
+* **📚 Biblioteca:** Histórico de lecturas pasadas con puntuaciones y sinopsis.
+* **💡 Guía de debate:** Preguntas seccionadas para comentar durante el mes.
+* **💬 Comunidad:** Espacio interactivo para proponer nuevos libros y confirmar asistencia (*RSVP*).
 
 ---
 
