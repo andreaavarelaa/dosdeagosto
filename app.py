@@ -7,13 +7,21 @@ def render_logo_header():
     if not logo_path.exists():
         return
 
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        st.image(
-            str(logo_path),
-            use_container_width=True,
-            output_format="auto"
-        )
+    col_empty, col_content, col_empty2 = st.columns([0.5, 1.8, 0.5])
+
+    with col_content:
+        col_logo, col_title = st.columns([1, 1.5], gap="large", vertical_alignment="center")
+
+        with col_logo:
+            st.image(
+                str(logo_path),
+                width=750,
+                output_format="auto"
+            )
+
+        with col_title:
+            st.markdown("<h1 style='font-size: 3rem; margin: 0; line-height: 1;'>CAFÉ & LETRAS</h1>", unsafe_allow_html=True)
+            st.markdown("<p style='font-style: italic; color: #666; margin: 0;'>Club de lectura de Claudia, Irene y Andrea</p>", unsafe_allow_html=True)
 
 
 st.set_page_config(
@@ -80,8 +88,6 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 render_logo_header()
-st.markdown("<h1 style='text-align: center; font-size: 3rem; margin-top: 1rem;'>CAFÉ & LETRAS</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; font-style: italic; color: #666;'>Club de lectura de Claudia, Irene y Andrea</p>", unsafe_allow_html=True)
 st.markdown("---")
 
 tab1, tab2, tab3 = st.tabs(["📖 Libro del mes", "📚 Biblioteca", "💬 Comunidad"])
