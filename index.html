@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dos de Agosto — Club de Lectura</title>
+    <!-- Fuentes Google: Playfair Display + Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #faf9f6;
+            --text-color: #1a1a1a;
+            --accent-color: #1a1a1a;
+            --border-color: #e5e5e5;
+            --card-bg: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        header .logo {
+            flex-shrink: 0;
+        }
+
+        header .logo img {
+            width: 200px;
+            height: auto;
+            display: block;
+        }
+
+        header .title-section {
+            text-align: left;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-style: italic;
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 2rem 0;
+        }
+
+        /* Sistema de Pestañas */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+
+        .tab-button {
+            background: none;
+            border: none;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #777;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .tab-button.active, .tab-button:hover {
+            color: var(--text-color);
+            font-weight: 600;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Seccion Libro del Mes */
+        .featured-book {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        .book-cover img {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+
+        .badge {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .book-details h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .meta {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .quote-box {
+            border-left: 2px solid var(--accent-color);
+            padding-left: 1rem;
+            font-style: italic;
+            color: #444;
+            margin: 1.5rem 0;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+        }
+
+        .info-card {
+            background: #f0efe9;
+            padding: 1rem 1.2rem;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Seccion Biblioteca */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .book-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .book-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+
+        .book-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            margin: 0.4rem 0;
+        }
+
+        /* Seccion Comunidad / Formularios */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-family: inherit;
+        }
+
+        button.btn-submit {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+
+        button.btn-submit:hover {
+            opacity: 0.9;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .featured-book, .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            h1 { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="logo">
+            <img src="logo.png" alt="Dos de Agosto Logo">
+        </div>
+        <div class="title-section">
+            <h1>CAFÉ & LETRAS</h1>
+            <p>Club de lectura de Claudia, Irene y Andrea</p>
+        </div>
+    </header>
+
+    <!-- Pestañas de Navegación -->
+    <div class="tabs">
+        <button class="tab-button active" onclick="openTab(event, 'tab1')">📖 Libro del mes</button>
+        <button class="tab-button" onclick="openTab(event, 'tab2')">📚 Biblioteca</button>
+        <button class="tab-button" onclick="openTab(event, 'tab3')">💬 Comunidad</button>
+    </div>
+
+    <!-- Pestaña 1: Libro del Mes -->
+    <div id="tab1" class="tab-content active">
+        <div class="featured-book">
+            <div class="book-cover">
+                <img src="libros/orgullo_y prejuicio.jpeg" alt="Portada de Orgullo y Prejuicio">
+            </div>
+            <div class="book-details">
+                <span class="badge">Lectura actual — Agosto</span>
+                <h2>Orgullo y Prejuicio</h2>
+                <p class="meta"><b>Autor:</b> Jane Austen | <b>Páginas:</b> 432 | <b>Género:</b> Romance / Comedia</p>
+                
+                <p>Una novela clásica de Jane Austen que explora los temas de matrimonio, clase social y amor verdadero a través de la relación entre Elizabeth Bennet y el Sr. Darcy. Una lectura imprescindible que sigue siendo relevante y entretenida.</p>
+                
+                <div class="quote-box">
+                    "Es una verdad universalmente reconocida que un hombre soltero en posesión de una buena fortuna debe estar en busca de esposa."
+                </div>
+                
+                <div class="info-card">
+                    📅 <b>Próxima reunión:</b> Viernes 29 de Agosto - 19:30h<br>
+                    📍 <b>Lugar:</b> Casa de Claudia
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pestaña 2: Biblioteca -->
+    <div id="tab2" class="tab-content">
+        <h3 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 1rem;">Histórico de lecturas</h3>
+        <div class="grid-2">
+            <div class="book-card">
+                <span style="color:#888; font-size: 0.85rem;">Julio 2026</span>
+                <h3>Título del libro anterior</h3>
+                <p><b>Autor:</b> Nombre del autor — ⭐ 4.5 / 5</p>
+                <p style="margin-top: 0.5rem; color: #555;">Breve sinopsis o comentario del grupo sobre esta lectura.</p>
+            </div>
+            <div class="book-card">
+                <span style="color:#888; font-size: 0.85rem;">Junio 2026</span>
+                <h3>Otro libro leído</h3>
+                <p><b>Autor:</b> Nombre de la autora — ⭐ 5 / 5</p>
+                <p style="margin-top: 0.5rem; color: #555;">Breve sinopsis o comentario del grupo sobre esta lectura.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pestaña 3: Comunidad -->
+    <div id="tab3" class="tab-content">
+        <div class="grid-2">
+            <div>
+                <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 1rem;">Proponer lectura</h3>
+                <form action="https://formspree.io/f/TU_ID_AQUI" method="POST">
+                    <input type="text" name="titulo" placeholder="Título del libro" required>
+                    <input type="text" name="autor" placeholder="Autor / Autora" required>
+                    <textarea name="razon" rows="4" placeholder="¿Por qué deberíamos leerlo?" required></textarea>
+                    <button type="submit" class="btn-submit">Enviar propuesta</button>
+                </form>
+            </div>
+
+            <div>
+                <h3 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 1rem;">Confirmar asistencia</h3>
+                <form action="https://formspree.io/f/TU_ID_AQUI" method="POST">
+                    <input type="text" name="nombre" placeholder="Tu nombre" required>
+                    <select name="asistencia" required>
+                        <option value="" disabled selected>¿Asistirás a la próxima reunión?</option>
+                        <option value="si">¡Sí, allí estaré!</option>
+                        <option value="no">Esta vez no puedo</option>
+                    </select>
+                    <button type="submit" class="btn-submit">Confirmar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Lógica sencilla para cambiar entre pestañas
+    function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].classList.remove("active");
+        }
+        tablinks = document.getElementsByClassName("tab-button");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].classList.remove("active");
+        }
+        document.getElementById(tabName).classList.add("active");
+        evt.currentTarget.classList.add("active");
+    }
+</script>
+
+</body>
+</html>
