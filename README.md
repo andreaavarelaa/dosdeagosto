@@ -1,37 +1,65 @@
-# Dos de Agosto 
-## Café y letras
+# Dos de Agosto — Café & Letras
+## Club de Lectura
 
-¡Bienvenidos a **Dos de Agosto**, nuestro club de lectura! Este espacio digital está dedicado a reunir a apasionados por la lectura para compartir opiniones, descubrir nuevas historias y comentar nuestros libros favoritos mes a mes.
-
----
-
-## Qué es Dos de Agosto
-Somos un club de lectura abierto y dinámico. Cada mes elegimos una obra diferente para leer en conjunto y, a través de este espacio y nuestras reuniones, debatimos sobre sus tramas, personajes y enseñanzas.
+Repositorio oficial de la plataforma web del club de lectura **Dos de Agosto**, diseñada para la gestión de lecturas, propuestas de libros y confirmaciones de asistencia mediante Netlify Forms y Serverless Functions.
 
 ---
 
-## Lectura Actual
-* **Libro del mes:** *Orgullo y Prejuicio*
-* **Autor/a:** *Jane Austen*
-* **Fecha de debate:** *03/09/2026*
+## Stack Tecnológico
+
+* **Frontend:** HTML5, CSS3 nativo (con diseño responsivo y sistema de pestañas) y JavaScript vainilla (`fetch` API).
+* **Backend / Serverless:** Netlify Functions (`Node.js`) para la obtención segura de datos de formularios.
+* **Hosting & Forms:** [Netlify](https://www.netlify.com/) (Hosting estático + Netlify Forms API).
 
 ---
 
-## Cómo participar
-1. **Consigue el libro** del mes actual.
-2. **Léelo** a tu ritmo (¡intenta llegar a tiempo para evitar spoilers!).
-3. **Únete al debate** en nuestras sesiones o deja tus impresiones abriendo un *Issue* en este repositorio.
+## Estructura del Repositorio
+
+```text
+├── libros/                        # Incluye las imágenes msostradas con la información del libro del mes
+├── versiones_previas              # Código utilizado en versiones anteriores de la web
+│   └── app.py
+├── .gitignore
+├── .env
+├── logo.png
+├── new_tab.png
+├── index.html                     # Interfaz web principal (SPA con pestañas)
+├── netlify.toml                   # Configuración de despliegue y rutas de Netlify
+├── netlify/
+│   └── functions/
+│       └── get-submissions.js     # Serverless function para consultar Netlify Forms API
+└── README.md                      # Documentación del proyecto
+```
 
 ---
 
-## El repositorio
-Este repositorio contiene el código fuente en Python de la aplicación web oficial del club de lectura creada con Streamlit.
-La plataforma incluye:
-* **📖 Libro del mes:** Información detallada de la lectura actual y próximas reuniones.
-* **📚 Biblioteca:** Histórico de lecturas pasadas con puntuaciones y sinopsis.
-* **💡 Guía de debate:** Preguntas seccionadas para comentar durante el mes.
-* **💬 Comunidad:** Espacio interactivo para proponer nuevos libros y confirmar asistencia (*RSVP*).
+## Arquitectura y Funcionamiento
+
+* **Formularios Estáticos (Netlify Forms):**  
+  La interfaz web (`index.html`) incluye formularios HTML nativos para la propuesta de lecturas y la confirmación de asistencia (RSVP) procesados automáticamente por Netlify.
+
+* **Función Serverless (`get-submissions.js`):**  
+  Dado que las claves de la API de Netlify no deben exponerse en el cliente, la aplicación utiliza una Netlify Function que actúa como intermediario seguro. Esta función realiza lo siguiente:
+  * Consulta los formularios activos del sitio mediante la API v1 de Netlify.
+  * Recupera las *submissions* (respuestas) asociadas a cada formulario.
+  * Ordena los resultados cronológicamente y los devuelve en formato JSON al frontend para poblar las tablas dinámicamente.
 
 ---
 
-> *"Un lector vive mil vidas antes de morir. El que no lee vive solo una." — George R.R. Martin*
+## Configuración y Despliegue Local
+
+### 1. Variables de Entorno
+Para que la Netlify Function pueda comunicarse con la API de Netlify, es necesario configurar las siguientes variables de entorno en el panel de Netlify (*Site settings > Environment variables*):
+
+* `NETLIFY_API_TOKEN`: Personal Access Token generado en Netlify (*User settings > Applications*).
+* `NETLIFY_SITE_ID`: API ID único del sitio (*Site settings > General*).
+
+### 2. Despliegue en Netlify
+El repositorio incluye un archivo `netlify.toml` que define la configuración automática del proyecto:
+
+```toml
+[build]
+  functions = "netlify/functions"
+  publish = "."
+```
+Con esto, al conectar el repositorio a Netlify, el despliegue tanto de la web estática como de las funciones serverless se realiza de forma automática.

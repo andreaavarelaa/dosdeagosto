@@ -298,7 +298,15 @@
         
         <div style="max-width: 600px; margin: 0 auto 3rem;">
             <h4 style="font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 1rem;">Proponer una lectura</h4>
-            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdHIKaUB9fvrL6TUYPDfIBmkk7rMKg-IbE41914t_IghzyO9Q/viewform?embedded=true" width="100%" height="600" frameborder="0" marginheight="0" marginwidth="0">Cargando…</iframe>
+            <form name="propuestas" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" action="/?enviado=propuestas#tab3">
+                <input type="hidden" name="form-name" value="propuestas" />
+                <p style="display:none;">
+                    <label>No rellenar si eres humano: <input name="bot-field" /></label>
+                </p>
+                <input type="text" name="Título del libro" placeholder="Título del libro" required>
+                <input type="text" name="Autor/Autora" placeholder="Autor/a" required>
+                <button type="submit" class="btn-submit">Enviar propuesta</button>
+            </form>
         </div>
         
         <hr>
@@ -332,7 +340,19 @@
             <hr style="margin: 2rem 0;">
             
             <h4 style="font-family: 'Playfair Display', serif; font-size: 1.3rem; margin: 2rem 0 1rem;">Confirmar tu asistencia</h4>
-            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSf_zSG0l1ImuP0rxQcJTd67ylUr6MfPzBQeI5fsf2wS-Pb9aA/viewform?embedded=true" width="100%" height="400" frameborder="0" marginheight="0" marginwidth="0">Cargando…</iframe>
+            <form name="confirmaciones" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" action="/?enviado=confirmaciones#tab4">
+                <input type="hidden" name="form-name" value="confirmaciones" />
+                <p style="display:none;">
+                    <label>No rellenar si eres humano: <input name="bot-field" /></label>
+                </p>
+                <input type="text" name="Nombre" placeholder="Tu nombre" required>
+                <select name="Asistencia" required>
+                    <option value="" disabled selected>¿Vienes a la reunión?</option>
+                    <option value="Sí">Sí</option>
+                    <option value="No">No</option>
+                </select>
+                <button type="submit" class="btn-submit">Confirmar</button>
+            </form>
             
             <hr style="margin: 2rem 0;">
             
@@ -355,47 +375,48 @@
 
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script>
-    const PROPUESTAS_URL = 'https://corsproxy.io/?https://docs.google.com/spreadsheets/d/e/2PACX-1vSdVMWebdrC3lxwu11Ec94SpTAj5NLpyikuQipMWkzJ1357bt1P3a9PGXxZ4Qgh0qitxjm9o7JVETIx/pub?output=csv';
-    const CONFIRMACIONES_URL = 'https://corsproxy.io/?https://docs.google.com/spreadsheets/d/e/2PACX-1vQyCJ1VEFOebU4z0nhOBTfzZKVPNin-YZiJ8k2AAiBpNdSTd_ZMoLB1AEctB1IbJ9MlQ3DOtKlUTNnB/pub?output=csv';
+    function renderRows(rows, tableBodyId, columns) {
+        const tbody = document.getElementById(tableBodyId);
+        tbody.innerHTML = '';
 
-    function fetchSheetData(csvUrl, tableBodyId, columns) {
-        fetch(csvUrl)
-            .then(response => response.text())
-            .then(data => {
-                Papa.parse(data, {
-                    header: true,
-                    skipEmptyLines: true,
-                    complete: function(results) {
-                        const tbody = document.getElementById(tableBodyId);
-                        tbody.innerHTML = '';
-                        
-                        if (!results.data || results.data.length === 0) {
-                            tbody.innerHTML = `<tr style="border-bottom: 1px solid #e5e5e5;"><td colspan="${columns.length}" style="padding: 12px; text-align: center; color: #999;">No hay datos aún</td></tr>`;
-                            return;
-                        }
-                        
-                        results.data.forEach((row) => {
-                            if (!row || Object.values(row).every(v => !v)) return;
-                            
-                            const tr = document.createElement('tr');
-                            tr.style.borderBottom = '1px solid #e5e5e5';
-                            
-                            columns.forEach(colName => {
-                                const td = document.createElement('td');
-                                td.style.padding = '12px';
-                                td.textContent = (row[colName] || '-').substring(0, 150);
-                                tr.appendChild(td);
-                            });
-                            
-                            tbody.appendChild(tr);
-                        });
-                    }
-                });
+        if (!rows || rows.length === 0) {
+            tbody.innerHTML = `<tr style="border-bottom: 1px solid #e5e5e5;"><td colspan="${columns.length}" style="padding: 12px; text-align: center; color: #999;">No hay datos aún</td></tr>`;
+            return;
+        }
+
+        rows.forEach((row) => {
+            if (!row || Object.values(row).every(v => !v)) return;
+
+            const tr = document.createElement('tr');
+            tr.style.borderBottom = '1px solid #e5e5e5';
+
+            columns.forEach(colName => {
+                const td = document.createElement('td');
+                td.style.padding = '12px';
+                td.textContent = (row[colName] || '-').toString().substring(0, 150);
+                tr.appendChild(td);
+            });
+
+            tbody.appendChild(tr);
+        });
+    }
+
+    function showError(tableBodyId, columns) {
+        const tbody = document.getElementById(tableBodyId);
+        tbody.innerHTML = `<tr style="border-bottom: 1px solid #e5e5e5;"><td colspan="${columns.length}" style="padding: 12px; text-align: center; color: #c0392b;">No se pudieron cargar los datos.</td></tr>`;
+    }
+
+    function fetchFormData(formName, tableBodyId, columns) {
+        fetch('/.netlify/functions/get-submissions?form=' + encodeURIComponent(formName))
+            .then(response => {
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                return response.json();
             })
+            .then(rows => renderRows(rows, tableBodyId, columns))
             .catch(error => {
-                console.error('Fetch error:', error);
+                console.error('Error al cargar', formName, error);
+                showError(tableBodyId, columns);
             });
     }
 
@@ -415,8 +436,8 @@
 
     // Cargar datos cuando se carga la página
     window.addEventListener('load', function() {
-        fetchSheetData(PROPUESTAS_URL, 'propuestasBody', ['Título del libro', 'Autor/Autora']);
-        fetchSheetData(CONFIRMACIONES_URL, 'confirmacionesBody', ['Nombre', 'Asistencia']);
+        fetchFormData('propuestas', 'propuestasBody', ['Título del libro', 'Autor/Autora']);
+        fetchFormData('confirmaciones', 'confirmacionesBody', ['Nombre', 'Asistencia']);
     });
 </script>
 
