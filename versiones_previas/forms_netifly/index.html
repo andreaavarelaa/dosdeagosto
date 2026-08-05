@@ -298,9 +298,11 @@
         
         <div style="max-width: 600px; margin: 0 auto 3rem;">
             <h4 style="font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 1rem;">Proponer una lectura</h4>
-            
-            <!-- FORZAMOS A BLOQUEAR LA RECARGA DE PÁGINA DIRECTAMENTE EN EL HTML -->
-            <form id="form-propuestas" onsubmit="handleSubmit(event, 'propuestas', 'propuestasBody', ['Título del libro', 'Autor/Autora'])">
+            <form name="propuestas" method="POST" action="/" data-netlify="true" data-netlify-honeypot="bot-field" id="form-propuestas">
+                <input type="hidden" name="form-name" value="propuestas" />
+                <p style="display:none;">
+                    <label>No rellenar si eres humano: <input name="bot-field" /></label>
+                </p>
                 <input type="text" name="Título del libro" placeholder="Título del libro" required>
                 <input type="text" name="Autor/Autora" placeholder="Autor/a" required>
                 <button type="submit" class="btn-submit">Enviar propuesta</button>
@@ -319,7 +321,7 @@
             </thead>
             <tbody id="propuestasBody">
                 <tr style="border-bottom: 1px solid #e5e5e5;">
-                    <td colspan="2" style="padding: 12px; text-align: center; color: #999;">Cargando propuestas...</td>
+                    <td colspan="3" style="padding: 12px; text-align: center; color: #999;">Cargando propuestas...</td>
                 </tr>
             </tbody>
         </table>
@@ -338,9 +340,11 @@
             <hr style="margin: 2rem 0;">
             
             <h4 style="font-family: 'Playfair Display', serif; font-size: 1.3rem; margin: 2rem 0 1rem;">Confirmar tu asistencia</h4>
-            
-            <!-- FORZAMOS A BLOQUEAR LA RECARGA DE PÁGINA DIRECTAMENTE EN EL HTML -->
-            <form id="form-confirmaciones" onsubmit="handleSubmit(event, 'confirmaciones', 'confirmacionesBody', ['Nombre', 'Asistencia'])">
+            <form name="confirmaciones" method="POST" action="/" data-netlify="true" data-netlify-honeypot="bot-field" id="form-confirmaciones">
+                <input type="hidden" name="form-name" value="confirmaciones" />
+                <p style="display:none;">
+                    <label>No rellenar si eres humano: <input name="bot-field" /></label>
+                </p>
                 <input type="text" name="Nombre" placeholder="Tu nombre" required>
                 <select name="Asistencia" required>
                     <option value="" disabled selected>¿Vienes a la reunión?</option>
@@ -372,10 +376,6 @@
 </div>
 
 <script>
-    // Tu NUEVA URL oficial de Google Script
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzt1s8B1S9OE67MzkXPfadYF8t7YRdwezq8oKUyiJlg8e_rim_xKEofAm0mQuYZ_c8g0w/exec";
-
-    // Función para pintar la tabla con los datos del Excel
     function renderRows(rows, tableBodyId, columns) {
         const tbody = document.getElementById(tableBodyId);
         tbody.innerHTML = '';
@@ -402,21 +402,24 @@
         });
     }
 
-    // Petición GET para cargar los datos del Excel
+    function showError(tableBodyId, columns) {
+        const tbody = document.getElementById(tableBodyId);
+        tbody.innerHTML = `<tr style="border-bottom: 1px solid #e5e5e5;"><td colspan="${columns.length}" style="padding: 12px; text-align: center; color: #c0392b;">No se pudieron cargar los datos.</td></tr>`;
+    }
+
     function fetchFormData(formName, tableBodyId, columns) {
-        fetch(`${GOOGLE_SCRIPT_URL}?formName=${formName}`)
-            .then(response => response.json())
-            .then(rows => {
-                if (rows.error) throw new Error(rows.error);
-                renderRows(rows, tableBodyId, columns);
+        fetch('/.netlify/functions/get-submissions?form=' + encodeURIComponent(formName))
+            .then(response => {
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                return response.json();
             })
+            .then(rows => renderRows(rows, tableBodyId, columns))
             .catch(error => {
                 console.error('Error al cargar', formName, error);
-                document.getElementById(tableBodyId).innerHTML = `<tr style="border-bottom: 1px solid #e5e5e5;"><td colspan="${columns.length}" style="padding: 12px; text-align: center; color: #c0392b;">No se pudieron cargar los datos (posible bloqueo local).</td></tr>`;
+                showError(tableBodyId, columns);
             });
     }
 
-    // Lógica para cambiar entre pestañas
     function openTab(evt, tabName) {
         var i, tabcontent, tablinks;
         tabcontent = document.getElementsByClassName("tab-content");
@@ -431,47 +434,42 @@
         evt.currentTarget.classList.add("active");
     }
 
-    // Cargar datos automáticamente al abrir la página
+    // Cargar datos cuando se carga la página
     window.addEventListener('load', function() {
-        fetchFormData('Propuestas', 'propuestasBody', ['Título del libro', 'Autor/Autora']);
-        fetchFormData('Confirmaciones', 'confirmacionesBody', ['Nombre', 'Asistencia']);
+        fetchFormData('propuestas', 'propuestasBody', ['Título del libro', 'Autor/Autora']);
+        fetchFormData('confirmaciones', 'confirmacionesBody', ['Nombre', 'Asistencia']);
     });
 
-    // Función que envía los datos (Llamada directamente desde el HTML)
+    // Función para manejar el envío de formularios sin recargar la página
     function handleSubmit(event, formName, tableBodyId, columns) {
-        event.preventDefault(); // Bloqueo estricto
+        event.preventDefault(); // Evita que la página se recargue
         
         const form = event.target;
         const submitBtn = form.querySelector('button[type="submit"]');
         const originalBtnText = submitBtn.textContent;
+        
         const formData = new FormData(form);
+        formData.set("form-name", form.getAttribute("name"));
         
-        // Asignamos la pestaña correcta
-        const sheetName = formName === 'propuestas' ? 'Propuestas' : 'Confirmaciones';
-        formData.append("formName", sheetName);
-        
-        // Cambiamos texto del botón
         submitBtn.textContent = 'Enviando...';
         submitBtn.disabled = true;
 
-        // Modo 'no-cors' para engañar al disco duro y que deje pasar la petición a Google
-        fetch(GOOGLE_SCRIPT_URL, {
+        fetch('/', {
             method: 'POST',
-            mode: 'no-cors',
-            body: formData
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams(formData).toString()
         })
-        .then(() => {
-            // Éxito: cambiamos el botón y limpiamos
+        .then((response) => {
+            if (!response.ok) throw new Error("Error en el servidor");
+            
             submitBtn.textContent = '¡Enviado con éxito!';
-            submitBtn.style.backgroundColor = '#2c5e3f';
+            submitBtn.style.backgroundColor = '#2c5e3f'; // Verde
             form.reset();
             
-            // Esperamos un segundo a que Google escriba en el Excel y recargamos
             setTimeout(() => {
-                fetchFormData(sheetName, tableBodyId, columns);
+                fetchFormData(formName, tableBodyId, columns);
             }, 1500);
             
-            // Restauramos botón
             setTimeout(() => {
                 submitBtn.textContent = originalBtnText;
                 submitBtn.style.backgroundColor = '';
@@ -481,7 +479,7 @@
         .catch((error) => {
             console.error('Error al enviar formulario:', error);
             submitBtn.textContent = 'Error al enviar';
-            submitBtn.style.backgroundColor = '#c0392b';
+            submitBtn.style.backgroundColor = '#c0392b'; // Rojo
             
             setTimeout(() => {
                 submitBtn.textContent = originalBtnText;
