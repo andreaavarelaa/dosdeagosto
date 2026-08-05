@@ -447,28 +447,29 @@
         const form = event.target;
         const submitBtn = form.querySelector('button[type="submit"]');
         const originalBtnText = submitBtn.textContent;
-        const formData = new FormData(form);
         
-        // Cambiamos el texto del botón mientras envía
+        const formData = new FormData(form);
+        formData.set("form-name", form.getAttribute("name"));
+        
         submitBtn.textContent = 'Enviando...';
         submitBtn.disabled = true;
 
-        // Enviamos los datos a Netlify de fondo
         fetch('/', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams(formData).toString()
         })
-        .then(() => {
-            // Éxito: cambiamos el botón, limpiamos el form y actualizamos la tabla
+        .then((response) => {
+            if (!response.ok) throw new Error("Error en el servidor");
+            
             submitBtn.textContent = '¡Enviado con éxito!';
-            submitBtn.style.backgroundColor = '#2c5e3f'; // Un verde elegante
+            submitBtn.style.backgroundColor = '#2c5e3f'; // Verde
             form.reset();
             
-            // Recargamos los datos de la tabla correspondiente
-            fetchFormData(formName, tableBodyId, columns);
+            setTimeout(() => {
+                fetchFormData(formName, tableBodyId, columns);
+            }, 1500);
             
-            // Restauramos el botón después de 3 segundos
             setTimeout(() => {
                 submitBtn.textContent = originalBtnText;
                 submitBtn.style.backgroundColor = '';
@@ -487,15 +488,6 @@
             }, 3000);
         });
     }
-
-    // Asignamos el evento "submit" a nuestros dos formularios
-    document.getElementById('form-propuestas').addEventListener('submit', function(e) {
-        handleSubmit(e, 'propuestas', 'propuestasBody', ['Título del libro', 'Autor/Autora']);
-    });
-
-    document.getElementById('form-confirmaciones').addEventListener('submit', function(e) {
-        handleSubmit(e, 'confirmaciones', 'confirmacionesBody', ['Nombre', 'Asistencia']);
-    });
 </script>
 
 </body>
