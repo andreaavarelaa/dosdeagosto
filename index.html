@@ -298,7 +298,7 @@
         
         <div style="max-width: 600px; margin: 0 auto 3rem;">
             <h4 style="font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 1rem;">Proponer una lectura</h4>
-            <form name="propuestas" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" action="/?enviado=propuestas#tab3">
+            <form name="propuestas" data-netlify="true" data-netlify-honeypot="bot-field" id="form-propuestas">
                 <input type="hidden" name="form-name" value="propuestas" />
                 <p style="display:none;">
                     <label>No rellenar si eres humano: <input name="bot-field" /></label>
@@ -340,7 +340,7 @@
             <hr style="margin: 2rem 0;">
             
             <h4 style="font-family: 'Playfair Display', serif; font-size: 1.3rem; margin: 2rem 0 1rem;">Confirmar tu asistencia</h4>
-            <form name="confirmaciones" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" action="/?enviado=confirmaciones#tab4">
+            <form name="confirmaciones" data-netlify="true" data-netlify-honeypot="bot-field" id="form-confirmaciones">
                 <input type="hidden" name="form-name" value="confirmaciones" />
                 <p style="display:none;">
                     <label>No rellenar si eres humano: <input name="bot-field" /></label>
@@ -438,6 +438,63 @@
     window.addEventListener('load', function() {
         fetchFormData('propuestas', 'propuestasBody', ['Título del libro', 'Autor/Autora']);
         fetchFormData('confirmaciones', 'confirmacionesBody', ['Nombre', 'Asistencia']);
+    });
+
+    // Función para manejar el envío de formularios sin recargar la página
+    function handleSubmit(event, formName, tableBodyId, columns) {
+        event.preventDefault(); // Evita que la página se recargue
+        
+        const form = event.target;
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.textContent;
+        const formData = new FormData(form);
+        
+        // Cambiamos el texto del botón mientras envía
+        submitBtn.textContent = 'Enviando...';
+        submitBtn.disabled = true;
+
+        // Enviamos los datos a Netlify de fondo
+        fetch('/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams(formData).toString()
+        })
+        .then(() => {
+            // Éxito: cambiamos el botón, limpiamos el form y actualizamos la tabla
+            submitBtn.textContent = '¡Enviado con éxito!';
+            submitBtn.style.backgroundColor = '#2c5e3f'; // Un verde elegante
+            form.reset();
+            
+            // Recargamos los datos de la tabla correspondiente
+            fetchFormData(formName, tableBodyId, columns);
+            
+            // Restauramos el botón después de 3 segundos
+            setTimeout(() => {
+                submitBtn.textContent = originalBtnText;
+                submitBtn.style.backgroundColor = '';
+                submitBtn.disabled = false;
+            }, 3000);
+        })
+        .catch((error) => {
+            console.error('Error al enviar formulario:', error);
+            submitBtn.textContent = 'Error al enviar';
+            submitBtn.style.backgroundColor = '#c0392b'; // Rojo
+            
+            setTimeout(() => {
+                submitBtn.textContent = originalBtnText;
+                submitBtn.style.backgroundColor = '';
+                submitBtn.disabled = false;
+            }, 3000);
+        });
+    }
+
+    // Asignamos el evento "submit" a nuestros dos formularios
+    document.getElementById('form-propuestas').addEventListener('submit', function(e) {
+        handleSubmit(e, 'propuestas', 'propuestasBody', ['Título del libro', 'Autor/Autora']);
+    });
+
+    document.getElementById('form-confirmaciones').addEventListener('submit', function(e) {
+        handleSubmit(e, 'confirmaciones', 'confirmacionesBody', ['Nombre', 'Asistencia']);
     });
 </script>
 
