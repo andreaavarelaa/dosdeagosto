@@ -402,17 +402,23 @@
         });
     }
 
-    // Petición GET para cargar los datos del Excel
+    // Petición GET para cargar los datos del Excel (Versión Servidor)
     function fetchFormData(formName, tableBodyId, columns) {
-        fetch(`${GOOGLE_SCRIPT_URL}?formName=${formName}`)
-            .then(response => response.json())
+        fetch(`${GOOGLE_SCRIPT_URL}?formName=${formName}`, {
+            method: 'GET',
+            redirect: 'follow' // Obliga al navegador a seguir la redirección de Google
+        })
+            .then(response => {
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                return response.json();
+            })
             .then(rows => {
                 if (rows.error) throw new Error(rows.error);
                 renderRows(rows, tableBodyId, columns);
             })
             .catch(error => {
                 console.error('Error al cargar', formName, error);
-                document.getElementById(tableBodyId).innerHTML = `<tr style="border-bottom: 1px solid #e5e5e5;"><td colspan="${columns.length}" style="padding: 12px; text-align: center; color: #c0392b;">No se pudieron cargar los datos (posible bloqueo local).</td></tr>`;
+                document.getElementById(tableBodyId).innerHTML = `<tr style="border-bottom: 1px solid #e5e5e5;"><td colspan="${columns.length}" style="padding: 12px; text-align: center; color: #c0392b;">No se pudieron cargar los datos (Bloqueo de seguridad del navegador).</td></tr>`;
             });
     }
 
