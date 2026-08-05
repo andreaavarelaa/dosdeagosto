@@ -1,65 +1,160 @@
 # Dos de Agosto — Café & Letras
+
 ## Club de Lectura
 
-Repositorio oficial de la plataforma web del club de lectura **Dos de Agosto**, diseñada para la gestión de lecturas, propuestas de libros y confirmaciones de asistencia mediante Netlify Forms y Serverless Functions.
+Repositorio oficial de la plataforma web del club de lectura **Dos de Agosto**, una aplicación web estática para gestionar las lecturas del club, recibir propuestas de libros y confirmar la asistencia a las reuniones utilizando **Google Apps Script** y **Google Sheets** como backend.
 
 ---
 
-## Stack Tecnológico
+# Características
 
-* **Frontend:** HTML5, CSS3 nativo (con diseño responsivo y sistema de pestañas) y JavaScript vainilla (`fetch` API).
-* **Backend / Serverless:** Netlify Functions (`Node.js`) para la obtención segura de datos de formularios.
-* **Hosting & Forms:** [Netlify](https://www.netlify.com/) (Hosting estático + Netlify Forms API).
+- Libro del mes destacado.
+- Biblioteca con histórico de lecturas.
+- Envío de propuestas de nuevos libros.
+- Confirmación de asistencia a reuniones.
+- Sincronización automática con Google Sheets.
+- Diseño responsive compatible con móviles y escritorio.
+- Interfaz sencilla basada en HTML, CSS y JavaScript puro.
 
 ---
 
-## Estructura del Repositorio
+# Stack Tecnológico
+
+## Frontend
+
+- HTML5
+- CSS3 nativo
+- JavaScript (Vanilla)
+- Fetch API
+
+## Backend
+
+- Google Apps Script (Web App)
+
+## Base de datos
+
+- Google Sheets
+
+---
+
+# Estructura del proyecto
 
 ```text
-├── libros/                        # Incluye las imágenes msostradas con la información del libro del mes
-├── versiones_previas              # Código utilizado en versiones anteriores de la web
+├── libros/                             # Incluye las imágenes msostradas con la información del libro del mes
+├── versiones_previas/                  # Código utilizado en versiones anteriores de la web
 │   └── app.py
+│   └── forms_netlify/
+│       └── index.html
+│       └── netlify.toml                # Configuración de despliegue y rutas de Netlify
+│       └── netflify/
+│           └── functions/
+│               └── get-submissions.js  # Serverless function para consultar Netlify Forms API
 ├── .gitignore
 ├── .env
 ├── logo.png
 ├── new_tab.png
-├── index.html                     # Interfaz web principal (SPA con pestañas)
-├── netlify.toml                   # Configuración de despliegue y rutas de Netlify
-├── netlify/
-│   └── functions/
-│       └── get-submissions.js     # Serverless function para consultar Netlify Forms API
-└── README.md                      # Documentación del proyecto
+├── index.html                           # Interfaz web principal (SPA con pestañas)    
+└── README.md                            # Documentación del proyecto
 ```
 
 ---
 
-## Arquitectura y Funcionamiento
+# Funcionamiento
 
-* **Formularios Estáticos (Netlify Forms):**  
-  La interfaz web (`index.html`) incluye formularios HTML nativos para la propuesta de lecturas y la confirmación de asistencia (RSVP) procesados automáticamente por Netlify.
+La aplicación es completamente estática.
 
-* **Función Serverless (`get-submissions.js`):**  
-  Dado que las claves de la API de Netlify no deben exponerse en el cliente, la aplicación utiliza una Netlify Function que actúa como intermediario seguro. Esta función realiza lo siguiente:
-  * Consulta los formularios activos del sitio mediante la API v1 de Netlify.
-  * Recupera las *submissions* (respuestas) asociadas a cada formulario.
-  * Ordena los resultados cronológicamente y los devuelve en formato JSON al frontend para poblar las tablas dinámicamente.
+Los datos no se almacenan localmente ni existe un servidor propio.
+
+Toda la información se gestiona mediante una **Web App de Google Apps Script**, que actúa como intermediaria entre la página web y una hoja de cálculo de Google Sheets.
+
+## Lectura de datos
+
+Al cargar la página se realizan dos peticiones GET:
+
+- Propuestas
+- Confirmaciones
+
+El Apps Script devuelve un JSON que contiene las filas almacenadas en la hoja correspondiente.
+
+Ese JSON se utiliza para rellenar dinámicamente las tablas.
+
+## Envío de formularios
+
+Los formularios envían la información mediante `fetch()` usando `FormData`.
+
+Después del envío:
+
+1. Se limpia el formulario.
+2. Se muestra un mensaje de éxito.
+3. Tras unos segundos se vuelven a solicitar los datos para actualizar las tablas automáticamente.
 
 ---
 
-## Configuración y Despliegue Local
+# Google Apps Script
 
-### 1. Variables de Entorno
-Para que la Netlify Function pueda comunicarse con la API de Netlify, es necesario configurar las siguientes variables de entorno en el panel de Netlify (*Site settings > Environment variables*):
+La aplicación utiliza una única URL pública del Web App. Este servicio se encarga de:
 
-* `NETLIFY_API_TOKEN`: Personal Access Token generado en Netlify (*User settings > Applications*).
-* `NETLIFY_SITE_ID`: API ID único del sitio (*Site settings > General*).
+- Recibir nuevas propuestas.
+- Guardar confirmaciones.
+- Devolver los datos almacenados en Google Sheets en formato JSON.
 
-### 2. Despliegue en Netlify
-El repositorio incluye un archivo `netlify.toml` que define la configuración automática del proyecto:
+---
 
-```toml
-[build]
-  functions = "netlify/functions"
-  publish = "."
-```
-Con esto, al conectar el repositorio a Netlify, el despliegue tanto de la web estática como de las funciones serverless se realiza de forma automática.
+# Pestañas de la aplicación
+
+## Libro del mes
+
+Muestra la lectura actual con:
+
+- Portada.
+- Autor.
+- Género.
+- Número de páginas.
+- Descripción.
+- Cita destacada.
+
+## Biblioteca
+
+Histórico de libros leídos por el club.
+
+## Propuestas
+
+Permite enviar nuevas recomendaciones de lectura y visualizar todas las propuestas registradas.
+
+## Reuniones
+
+Incluye la información de la próxima reunión y permite confirmar la asistencia.
+
+---
+
+# Personalización
+
+Para actualizar la lectura del mes basta con modificar en `index.html`:
+
+- Portada.
+- Autor.
+- Género.
+- Número de páginas.
+- Descripción.
+- Cita destacada.
+
+Las tablas se actualizan automáticamente desde Google Sheets sin necesidad de modificar el código.
+
+---
+
+# Despliegue
+
+Al tratarse de una página completamente estática, puede alojarse en cualquier servicio de hosting, por ejemplo:
+
+- GitHub Pages
+- Netlify
+- Vercel
+- Firebase Hosting
+
+Solo es necesario que la URL del Google Apps Script permanezca publicada y accesible.
+
+---
+
+# Licencia
+
+Proyecto desarrollado para uso interno del club de lectura **Dos de Agosto – Café & Letras**.
