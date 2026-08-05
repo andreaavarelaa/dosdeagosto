@@ -298,7 +298,7 @@
         
         <div style="max-width: 600px; margin: 0 auto 3rem;">
             <h4 style="font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 1rem;">Proponer una lectura</h4>
-            <form name="propuestas" data-netlify="true" data-netlify-honeypot="bot-field" id="form-propuestas">
+            <form name="propuestas" method="POST" action="/" data-netlify="true" data-netlify-honeypot="bot-field" id="form-propuestas">
                 <input type="hidden" name="form-name" value="propuestas" />
                 <p style="display:none;">
                     <label>No rellenar si eres humano: <input name="bot-field" /></label>
@@ -340,7 +340,7 @@
             <hr style="margin: 2rem 0;">
             
             <h4 style="font-family: 'Playfair Display', serif; font-size: 1.3rem; margin: 2rem 0 1rem;">Confirmar tu asistencia</h4>
-            <form name="confirmaciones" data-netlify="true" data-netlify-honeypot="bot-field" id="form-confirmaciones">
+            <form name="confirmaciones" method="POST" action="/" data-netlify="true" data-netlify-honeypot="bot-field" id="form-confirmaciones">
                 <input type="hidden" name="form-name" value="confirmaciones" />
                 <p style="display:none;">
                     <label>No rellenar si eres humano: <input name="bot-field" /></label>
